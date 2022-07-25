@@ -34,50 +34,79 @@ Input: [1, 3, 3, 5, 4, 0, 3, 8, 5, 5], Output: 12
 Buy during hour 1 (price = 1), sell during hour 4 (price = 5), net profit = 5 - 1 = 4. 
 Then, buy during hour 6 (price = 0), sell during hour 8 (price = 8), net profit = 8 - 0 = 8. 
 Total profit = 4 + 8 = 12.
+
+
+Demo: [7, 1, 5, 3, 4, 0], Output: 5
+Buy during hour 2 (price = 1), sell during hour 3 (price = 5), net profit = 5 - 1 = 4.
+Then, buy during hour 4 (price = 3), sell during hour 5 (price = 4), net profit = 4 - 3 = 1
+Total profit = 4 + 1 = 5
+
+What the code does:
+
+----------------------------------- Window #1 -----------------------------------
+Iterator        x               min_price_1     x - min_price_1     max_profit_1
+0               7               7               7 - 7 = 0           0               
+1               1               1               1 - 1 = 0           0
+2               5               1               5 - 1 = 4           4
+3               3               1               3 - 1 = 2 [X]       4
+4               4               1               4 - 1 = 3 [X]       4
+5               0               0               0 - 0 = 0 [X]       4
+
+----------------------------------- Window #2 -----------------------------------
+Iterator        x               max_price_2     max_price_2 - x     max_profit_2
+5               0               0               0 - 0 = 0           0               
+4               4               4               4 - 4 = 0           0
+3               3               4               4 - 3 = 1           1
+2               5               5               5 - 5 = 0 [X]       1
+1               1               5               5 - 1 = 4           4
+0               7               7               7 - 7 = 0 [X]       4
+
+profit_1 = [0, 0, 4, 4, 4, 4]
+profit_2 = [4, 4, 1, 1, 0, 0]
+profit_s = [4, 4, 5, 5, 4, 4] <- maximum from this list is 5, therefore answer is 5
 """
 
 class Solution:
     def stonks(self, prices):
-        # type prices: list
-        # return type: int
+        
+      
+        min_price_1 = 100000 
+        profit_1 = []  
+        max_profit_1 = 0 
 
-        # TODO: Write code below to return an int with the solution to the prompt
-        min_price_1 = 100000
-        profit_1 = []
-        max_Profit_1 = 0
-
-        for x in prices:
+        for x in prices: 
             if min_price_1 > x:
                 min_price_1 = x
             else:
+               
                 max_profit_1 = max(max_profit_1, x - min_price_1)
-            max_profit_1 = max(max_profit_1, x - min_price_1)
 
-        profit_1.append(max_profit_1)
+            profit_1.append(max_profit_1)
 
+        max_price_2 = 0 
+        profit_2 = [0]*len(prices) 
+        max_profit_2 = 0
 
-        max_price_2 = 0
-        profit_2 = [0]*len(prices)
-        max2 = 0
-
-        for i in range(len(prices) - 1, -1, -1):
+        for i in range(len(prices) - 1, -1, -1): 
             x = prices[i]
-            if x > max_price_2:
-                max_price_2 = x
+            if x > max_price_2: 
+               
+                max_price_2 =  x
             else:
-                max2 = max(max2, max2 - x)
-            profit_2[i] = max2
-        max_profit = 0
-        for i in range(len(prices)):
+                max_profit_2 = max(max_profit_2, max_price_2 - x)
+
+            profit_2[i] = max_profit_2
+
+        max_profit = 0 
+        for i in range(len(prices)): 
             sum_profit = profit_1[i] + profit_2[i]
-            if sum_profit > max_profit:
+            if sum_profit > max_profit: 
                 max_profit = sum_profit
+        
         print(profit_1)
         print(profit_2)
 
-        return max_profit
-        pass
-
+        return max_profit 
 def main():
     array = input().split(" ")
     for x in range (0, len(array)):
